@@ -30,6 +30,16 @@ module FixtureBuilder
     def factory(&block)
       self.files_to_check += @legacy_fixtures.to_a
       return unless rebuild_fixtures?
+
+      puts "=> Fixure rebuild triggered due to file hash diff. Diff:"
+      config = read_config.map(&:inspect)
+      actual = @file_hashes.map(&:inspect)
+
+      puts "=> Config:"
+      puts((config - actual).sort)
+      puts "=> Actual:"
+      puts((actual - config).sort)
+
       @builder = Builder.new(self, @namer, block).generate!
       write_config
     end
