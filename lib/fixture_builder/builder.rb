@@ -101,6 +101,9 @@ module FixtureBuilder
           # 2) We don't have to worry about default scopes and other things that
           #    may be present on the application's class.
           table_class = Class.new(ActiveRecord::Base) { self.table_name = table_name }
+          # Prevent this error for STI classes:
+          #   ActiveRecord::SubclassNotFound: Invalid single-table inheritance type
+          table_class.inheritance_column = nil
 
           records = select_scope_proc.call(table_class).to_a
 
